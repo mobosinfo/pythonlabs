@@ -12,7 +12,7 @@
 
 
 from tkinter import *
-import math as m
+from math import *
 from pylab import *
 import matplotlib.pyplot as plt
 import tkinter as tk
@@ -21,24 +21,25 @@ from tkinter import messagebox
 
 EPS = 1e-6
 NO_ROOT = -1
-MAX_ITER = -2
-INTERVAL_WRONG = -3
+MAX_ITER = -3
+INTERVAL_WRONG = -2
 
 
 # Заданная функция
 def f(x):
     return sin(x)
 
-
-# Приближение корней
-def calculate():
-    cleanList()
+# Собирает данные из ячеек
+def calculate(flag):
     cut = entryCut.get()
     step = entryStep.get()
     acc = entryAcc.get()
     it = entryIt.get()
     interval = proverkacut(cut)
-    shag = proverkanum(step, 2)
+    if (flag != 1):
+        shag = proverkanum(step, 2)
+    else:
+        shag = 0.5
     eps = proverkanum(acc, 3)
 
     iter = proverkanum(it, 4)
@@ -66,7 +67,7 @@ def calculate():
     return result
 
 
-# Возвращение ошибок
+# Уточнение корней
 def precise(left, right, maxIter, eps):
     currentLeft = left
     currentRight = right - eps
@@ -96,10 +97,10 @@ def precise(left, right, maxIter, eps):
 
 # Вывод результата в таблицу
 def res():
-
-    result = calculate()
+    cleanList()
+    result = calculate(0)
     cnt = 0
-
+    cnt1 = 0
     for line in result:
         if line[5] != NO_ROOT:
             cnt += 1
@@ -122,14 +123,23 @@ def res():
             listboxFx.insert(END, '-' * 30)
             listboxIt.insert(END, '-' * 30)
             listboxIn.insert(END, '-' * 30)
-
-    if cnt == 0:
+        if line[5] == MAX_ITER:
+            cnt1 = 1
+    res1 = calculate(1)
+    for line in res1:
+        if line[5] == 0:
+            cnt1 = 1
+    if cnt == 0 and cnt1 == 0:
         messagebox.showinfo('Ошибка', 'Корней на промежутке не найдено\n')
+    elif cnt == 0 and cnt1 > 0:
+        messagebox.showinfo('Ошибка', 'Превышено кол-во корней на промежутке\n')
     scales.configure(to=listboxN.size())
 
 
 # построение графика
 def graphic():
+    plt.close()
+    result = calculate(1)
     cut = entryCut.get()
     interval = proverkacut(cut)
     if interval == 0:
@@ -147,8 +157,13 @@ def graphic():
             ox.append(xpoints[i + 1])
             oy.append(s[i + 1])
     plt.scatter(ox, oy, s=40, c='purple', marker='o')
+    for line in result:
+        if line[5] == 0:
+            plt.scatter(line[2], line[3], s=40, c='green', marker='o')
+        else:
+            continue
     lab1 = u"ext"
-    lab2 = ''
+    lab2 = u"x = 0"
     plt.legend((lab1,lab2), frameon=False)
     plt.xlabel(u'x')
     plt.ylabel(u'f(x)')
@@ -316,8 +331,8 @@ if __name__ == "__main__":
     listboxIn = Listbox(current, width=20, height=20)
     listboxIn.grid(column=6, row=2)
 
-    labFunc = Label(text='Функция:\nsin(x)', font="Helvetica 18")
-    labFunc.place(x=1050, y=5)
+    # labFunc = Label(text='Функция:\nsin(x)', font="Helvetica 18")
+    # labFunc.place(x=1050, y=5)
     labCut = Label(text='Границы интервала', font="Helvetica 18")
     labCut.place(x=1050, y=55)
     entryCut = Entry(current)
@@ -351,8 +366,8 @@ if __name__ == "__main__":
     labAcc = Label(text = "Code: \n \
 0 - Программа работает правильно \n \
 -1 - Недостаточно итераций \n \
--2 - Превышение количества корней \n \
--3 - Выход из интервала\n")
+-2 - Выход из интервала\n \
+")
     labAcc.place(x=550, y=400)
 
     current.mainloop()
