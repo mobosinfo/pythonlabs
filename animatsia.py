@@ -1,116 +1,147 @@
-from pygame import *
+# Пак Дмитрий ИУ7-22Б
+
 import pygame as py
-from math import sin, cos
-import os
-
-py.init()
-size = [800, 600]
-screen = py.display.set_mode(size)
-clock = py.time.Clock()
-
-color = {"gray":[76,76,76], "blue":[54,144,234], "green":[114,232,149], "desert":[232,249,38], "brown":[99,82,68]}
-treecoords = [[120,10],[100,50],[250,10],[230,50],[380,10],[360,50],\
-[510,10],[490,50],[640,10],[620,50],[750,10],[730,50]]
-suncoords = [400,40]
-t1 = 0
-t2 = 1.57
+from math import sin, cos, pi
 
 
-def track():
-    py.draw.rect(screen, color["desert"],((450, 475), (45, 45))) #корпус
-    py.draw.rect(screen, color["brown"],((300, 400), (140, 85))) #крыша
-    py.draw.rect(screen, color["desert"], ((440, 430), (55, 50)))  # кабина
-    py.draw.rect(screen, color["desert"], ((300, 475), (180, 45)))
-
-    py.draw.circle(screen, (0,0,0), (345,520),20)
-    py.draw.circle(screen, (0,0,0), (435,520),20)
-    py.draw.circle(screen, (128,128,128), (345,520),16,3)
-    py.draw.circle(screen, (128,128,128), (435,520),16,3)
-
-running = True
-while running:
-    for event in py.event.get():
-        if event.type == py.QUIT:
-            running = False
-    screen.fill((1, 150, 250))
-    py.draw.circle(screen,(247,255,0),(suncoords[0],suncoords[1]),20)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]-15,suncoords[1]),(suncoords[0]-40,suncoords[1]),4)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]+15,suncoords[1]),(suncoords[0]+40,suncoords[1]),4)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]-10,suncoords[1]-10),(suncoords[0]-35,suncoords[1]-25),5)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]+10,suncoords[1]-10),(suncoords[0]+35,suncoords[1]-25),5)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]-10,suncoords[1]+10),(suncoords[0]-35,suncoords[1]+25),5)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0]+10,suncoords[1]+10),(suncoords[0]+35,suncoords[1]+25),5)
-    py.draw.line(screen,(247,255,0),\
-    (suncoords[0],suncoords[1]+35),(suncoords[0],suncoords[1]-35),4)
-    py.draw.rect(screen, color["green"], ((0, 350), (800, 500))) #зелень
-    py.draw.rect(screen, (129,128,128), ((0, 450), (800, 100))) #асфальт
-    py.draw.rect(screen, (255,255,255), ((0, 495), (800, 8))) #полоса
-    track()
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[0][0],330),(treecoords[0][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[1][0],290,),(treecoords[1][1],60)))
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[2][0],370),(treecoords[2][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[3][0],330,),(treecoords[3][1],60)))
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[4][0],330),(treecoords[4][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[5][0],290,),(treecoords[5][1],60)))
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[6][0],370),(treecoords[6][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[7][0],330,),(treecoords[7][1],60)))
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[8][0],330),(treecoords[8][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[9][0],290,),(treecoords[9][1],60)))
-    py.draw.rect(screen,(139,69,19),\
-    ((treecoords[10][0],370),(treecoords[10][1],40)))
-    py.draw.ellipse(screen,(0,80,0),\
-    ((treecoords[11][0],330,),(treecoords[11][1],60)))
-
-    x1 = -14.8*cos(t1)
-    fx1 = 14.8*sin(t1)
-    x2 = -14.8*cos(t2)
-    fx2 = 14.8*sin(t2)
-
-    
-    py.draw.line(screen,(128,128,128),(345+x1,520-fx1),(345-x1,520+fx1),3)
-    py.draw.line(screen,(128,128,128),(345+x2,520-fx2),(345-x2,520+fx2),3)
-    py.draw.line(screen,(128,128,128),(435+x1,520-fx1),(435-x1,520+fx1),3)
-    py.draw.line(screen,(128,128,128),(435+x2,520-fx2),(435-x2,520+fx2),3)
-
-    c = 0
-    for i in range(50,800,300):
-        if c%2 == 0:
-            y = 50
-        else:
-            y = 80
-        py.draw.ellipse(screen,(255,255,255),((i,y),(120,40)))
-        py.draw.ellipse(screen,(255,255,255),((i+20,y-10),(80,60)))
-        c += 1
-    py.display.flip()
-    clock.tick(15)
-    
-    for i in range(len(treecoords)):
-        treecoords[i][0] -= 10
-        if treecoords[i][0] + treecoords[i][1]/2 < 0:
-            treecoords[i][0] = 800 - treecoords[i][1]/2
-
-    suncoords[1] += 10
-    if suncoords[1] - 50 > 350:
-        suncoords[1] = 40
-    
-    t1 += 0.3
-    t2 += 0.3
+# Грузовик
+def track(trackcoords, color):
+    py.draw.rect(screen, color["orange"],
+                 ((trackcoords[0], trackcoords[1]), (180, 90)))
+    py.draw.rect(screen, color["darkblue"],
+                 ((trackcoords[0] + 25, trackcoords[1] + 10), (130, 40)))
 
 
-py.quit()
+# Колеса
+def wheels(wheelcoords_left, wheelcoords_right, color):
+    x1 = -14.8 * cos(t1)
+    fx1 = 14.8 * sin(t1)
+    x2 = -14.8 * cos(t2)
+    fx2 = 14.8 * sin(t2)
+    y_fix_wheel = 430
+
+    py.draw.circle(screen, (0, 0, 0), (wheelcoords_left[0], y_fix_wheel), 20)
+    py.draw.circle(screen, (0, 0, 0), (wheelcoords_right[0], y_fix_wheel), 20)
+    py.draw.circle(screen, (color["gray"]), (wheelcoords_left[0], y_fix_wheel),
+                   16, 3)
+    py.draw.circle(screen, (color["gray"]),
+                   (wheelcoords_right[0], y_fix_wheel), 16, 3)
+    py.draw.line(screen, (color["gray"]),
+                 (wheelcoords_left[0] + x1, y_fix_wheel - fx1),
+                 (wheelcoords_left[0] - x1, y_fix_wheel + fx1), 3)
+    py.draw.line(screen, (color["gray"]),
+                 (wheelcoords_left[0] + x2, y_fix_wheel - fx2),
+                 (wheelcoords_left[0] - x2, y_fix_wheel + fx2), 3)
+    py.draw.line(screen, (color["gray"]),
+                 (wheelcoords_right[0] + x1, y_fix_wheel - fx1),
+                 (wheelcoords_right[0] - x1, y_fix_wheel + fx1), 3)
+    py.draw.line(screen, (color["gray"]),
+                 (wheelcoords_right[0] + x2, y_fix_wheel - fx2),
+                 (wheelcoords_right[0] - x2, y_fix_wheel + fx2), 3)
+
+
+# Человек
+def man(headcoords):
+    py.draw.arc(screen, color["desert"], (paracoords, (150, 50)), 0,
+                pi, 25)
+    py.draw.circle(screen, (0, 0, 0),
+                   headcoords, 9, 9)
+    py.draw.line(screen, (0, 0, 0),
+                 headcoords,
+                 (headcoords[0], headcoords[1] + 25), 3)
+    py.draw.line(screen, (0, 0, 0),
+                 (headcoords[0], headcoords[1] + 25),
+                 (headcoords[0] + 10, headcoords[1] + 35), 3)
+    py.draw.line(screen, (0, 0, 0),
+                 (headcoords[0], headcoords[1] + 25),
+                 (headcoords[0] - 10, headcoords[1] + 35), 3)
+    py.draw.line(screen, (0, 0, 0),
+                 (headcoords[0] - 15, headcoords[1] + 13),
+                 (headcoords[0] + 15, headcoords[1] + 13), 3)
+    py.draw.line(screen, (0, 0, 0),
+                 (headcoords[0] + 15, headcoords[1] + 13),
+                 (headcoords[0] + 70, headcoords[1] - 25), 1)
+    py.draw.line(screen, (0, 0, 0),
+                 (headcoords[0] - 15, headcoords[1] + 13),
+                 (headcoords[0] - 80, headcoords[1] - 25), 1)
+
+
+# Фон
+def bg():
+    py.draw.rect(screen, color["green"], ((0, 450), (800, 150)))  # зелень
+    py.draw.rect(screen, (129, 128, 128), ((0, 450), (800, 50)))  # асфальт
+    # облака
+    py.draw.ellipse(screen, (255, 255, 255), ((150, 80), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((170, 70), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((190, 80), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((550, 80), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((570, 70), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((590, 80), (120, 40)))
+    py.draw.ellipse(screen, (255, 255, 255), ((590, 80), (120, 40)))
+
+
+if __name__ == "__main__":
+    py.init()
+    size = [800, 600]
+    screen = py.display.set_mode(size)
+    clock = py.time.Clock()
+    # цвета
+    color = {"gray": [76, 76, 76], "blue": [54, 144, 234],
+             "green": [114, 232, 149], "desert": [232, 249, 38],
+             "brown": [99, 82, 68], "red": [218, 97, 86],
+             "orange": [237, 154, 64], "darkblue": [0, 36, 244]}
+    # координаты объектов
+    trackcoords = [300, 340]
+    wheelcoords_left = [345, 430]
+    wheelcoords_right = [435, 430]
+    textcoords = [350, 390]
+    paracoords = [300, 50]
+    headcoords = [380, 100]
+
+    t1 = 0
+    t2 = 1.57
+    # текст
+    font = py.font.Font(None, 25)
+    text = font.render("Петрович", True, color["red"])
+
+    running = True
+    while running:
+        for event in py.event.get():
+            if event.type == py.QUIT:
+                running = False
+
+        screen.fill((1, 150, 250))
+
+        man(headcoords)
+
+        bg()
+
+        track(trackcoords, color)
+
+        wheels(wheelcoords_left, wheelcoords_right, color)
+
+        screen.blit(text, textcoords)
+
+        py.display.flip()
+        clock.tick(15)
+
+        trackcoords[0] += 10
+        textcoords[0] += 10
+        wheelcoords_left[0] += 10
+        wheelcoords_right[0] += 10
+        paracoords[1] += 3
+        headcoords[1] += 3
+        if trackcoords[0] > 800:
+            trackcoords[0] = -200
+            textcoords[0] = -150
+            wheelcoords_left[0] = -155
+            wheelcoords_right[0] = -65
+
+        t1 += 0.3
+        t2 += 0.3
+
+        if paracoords[1] > 450:
+            paracoords[1] = -100
+            headcoords[1] = -50
+
+    py.quit()
